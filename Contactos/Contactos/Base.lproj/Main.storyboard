@@ -11,7 +11,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Contacts Table View Controller-->
+        <!--Contactos-->
         <scene sceneID="1HC-t3-xKt">
             <objects>
                 <tableViewController id="4l9-K7-TAP" customClass="ContactsTableViewController" customModule="Contactos" customModuleProvider="target" sceneMemberID="viewController">
@@ -73,7 +73,7 @@
                             <outlet property="delegate" destination="4l9-K7-TAP" id="bWM-J0-cz0"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="I8u-Qn-gDT">
+                    <navigationItem key="navigationItem" title="Contactos" id="I8u-Qn-gDT">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="7dg-bl-Ukd">
                             <connections>
                                 <segue destination="ufr-Kg-B7h" kind="show" identifier="add" id="S6D-vj-0mX">
@@ -92,7 +92,7 @@
             </objects>
             <point key="canvasLocation" x="1111" y="296"/>
         </scene>
-        <!--Title-->
+        <!--Contacto-->
         <scene sceneID="G9l-ct-CyZ">
             <objects>
                 <viewController id="ufr-Kg-B7h" customClass="ViewController" customModule="Contactos" customModuleProvider="target" sceneMemberID="viewController">
@@ -212,7 +212,7 @@
                             <constraint firstItem="ATg-nz-LsN" firstAttribute="trailing" secondItem="pfe-ir-166" secondAttribute="trailing" id="zo1-Lj-wyz"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="MBv-Nx-DpT"/>
+                    <navigationItem key="navigationItem" title="Contacto" id="MBv-Nx-DpT"/>
                     <connections>
                         <outlet property="emailTextField" destination="HD3-Di-le7" id="cPY-6w-4w3"/>
                         <outlet property="lastNameTextField" destination="Ut6-Rq-6SN" id="vXg-Ik-tQF"/>
@@ -246,6 +246,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Zoj-da-U1B"/>
+        <segue reference="S6D-vj-0mX"/>
     </inferredMetricsTieBreakers>
 </document>

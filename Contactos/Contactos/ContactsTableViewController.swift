@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class ContactsTableViewController: UITableViewController {
     
     //MARK: - Properties
-    var contacts = [Contact]()
+    var contact = Contact()
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
@@ -22,12 +23,19 @@ class ContactsTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        
-        Contact().contacts { (success, data) in
+        SVProgressHUD.show()
+        contact.contacts { (success, data) in
+            
+            
             if success {
-                self.contacts = data
+                self.contact.contactsAgenda = data
                 self.tableView.reloadData()
+                
+            }else {
+                
+            
             }
+            SVProgressHUD.dismiss()
         }
     }
 
@@ -45,7 +53,7 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return contacts.count
+        return contact.contactsAgenda.count
     }
 
     
@@ -53,8 +61,14 @@ class ContactsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
 
         // Configure the cell...
-        let contact = contacts[indexPath.row]
+        let contact = self.contact.contactsAgenda[indexPath.row]
         cell.nameLabel.text = contact.name!
+        cell.lastNameLabel.text = contact.lastName!
+        
+        if let phone = contact.phone {
+            cell.phoneLabel.text = phone
+        }
+        
         return cell
     }
 
@@ -94,14 +108,22 @@ class ContactsTableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        
+        if segue.identifier == "add" {
+            let detailVC = segue.destination as! ViewController
+            detailVC.identifierView = segue.identifier
+            detailVC.model = contact
+        }else {
+            
+        }
     }
-    */
+    
 
 }

@@ -25,7 +25,28 @@ class ViewController: UIViewController {
     
     //MARK: IBActions
     @IBAction func saveContact(_ sender: Any) {
-        
+        if (nameTextField.text?.isEmpty)! || (lastNameTextField.text?.isEmpty)! || (phoneTextField.text?.isEmpty)! || (emailTextField.text?.isEmpty)! {
+            
+            let alert = UIAlertController(title: "Contacto", message: "Todos los campos son requeridos.", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .destructive, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
+            
+        }else {
+            let contact = Contact(id: "0", name: nameTextField.text!, lastName: lastNameTextField.text!, phone: phoneTextField.text!, email: emailTextField.text!)
+            
+            model.saveContact(contact, completion: { (success, data) in
+                if success {
+                    self.model.contactsAgenda = data
+                    let alert = UIAlertController(title: "Contacto", message: "Su contacto ha sido guardado!!!", preferredStyle: .alert)
+                    let oKAction = UIAlertAction(title: "OK", style: .default, handler: { (alert) in
+                        _ = self.navigationController?.popViewController(animated: true)
+                    })
+                    alert.addAction(oKAction)
+                    self.present(alert, animated: true, completion: nil)
+                }
+            })
+        }
     }
     
     @IBAction func updateContact(_ sender: Any) {

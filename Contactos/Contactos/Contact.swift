@@ -12,6 +12,7 @@ class Contact {
     
     typealias CompletionHandler = (_ sucess:Bool, _ response:[Contact]) ->()
     
+    
     //MARK: - Properties
     var id: String?
     var name: String?
@@ -44,15 +45,42 @@ class Contact {
                 self.contactsAgenda.removeAll()
                 
                 for item in data {
-                   let contact = Contact(id: item["_id"] as! String, name: item["name"] as! String, lastName: item["last_name"] as! String, phone: (item["phone"] as! NSNumber).stringValue, email: item["email"] as! String)
+                   let contact = Contact(id: item["_id"] as! String, name: item["name"] as! String, lastName: item["last_name"] as! String, phone:item["phone"] as? String ?? "", email: item["email"] as! String)
                     self.contactsAgenda.append(contact)
                     
                 }
                 completion(true, self.contactsAgenda)
             }
         }
+    }
+    
+    func saveContact(_ contact: Contact, completion:@escaping CompletionHandler) {
+        
+        let parameters : [String: AnyObject] = ["name": contact.name! as AnyObject, "last_name": contact.lastName! as AnyObject, "phone":contact.phone! as AnyObject, "email":contact.email! as AnyObject]
         
         
+        service.saveContact(parameters) { (success, data) in
+            if success {
+                self.contactsAgenda.append(contact)
+                
+            }
+            completion(success, self.contactsAgenda)
+        }
+        
+    }
+    
+    func toDictionary() -> [String: AnyObject] {
+        
+        let dict: [String: AnyObject] = [
+            "name": self.name! as AnyObject,
+            "last_name": self.lastName! as AnyObject,
+            "phone": self.phone! as AnyObject,
+            "email": self.email! as AnyObject
+        ]
+        
+        return dict
+        
+//        let parameters : [String: AnyObject] = ["name": contact.name! as AnyObject, "last_name": contact.lastName! as AnyObject, "phone":contact.phone! as AnyObject, "email":contact.email! as AnyObject]
     }
     
     

@@ -12,12 +12,13 @@ import Alamofire
 
 let headers = [
     "Authorization": "Basic a2lkX1cxRGJBd2dLVy06MDE5Y2VhMzBiZGNlNDEwMjlkMjk4ZGQ0MWMzMWQ3ZGQ=",
-    "Content-Type": "application/json"
+    "Content-Type": "application/x-www-form-urlencoded"
 ]
 
 class Service: NSObject {
     
     typealias CompletionHandler = (_ sucess:Bool, _ response:[[String: AnyObject]]) ->()
+    typealias CompletionHandlerPost = (_ success:Bool, _ response:[String: AnyObject] ) -> ()
     
     private let urlBase = "https://baas.kinvey.com"
     private let contacts = "/appdata/kid_W1DbAwgKW-/Contacts"
@@ -36,6 +37,27 @@ class Service: NSObject {
             }
             
         }
+    }
+    
+    
+    func saveContact(_ parameters:[String: AnyObject], completion:@escaping CompletionHandlerPost) {
+        let url = urlBase + contacts
+        
+        Alamofire.request(url, method:.post, parameters:parameters, headers:headers)
+            .responseJSON(){response in
+            
+            switch response.result {
+            case .success(let JSON):
+                print(JSON)
+                completion(true, JSON as! [String : AnyObject])
+            case .failure(let error):
+                print(error)
+                completion(false, ["error" : error.localizedDescription as AnyObject])
+            }
+            
+        }
+        
+        
     }
     
     

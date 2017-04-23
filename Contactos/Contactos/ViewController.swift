@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol ViewControllerDelegate:class {
+    func updateContacts()
+}
+
 class ViewController: UIViewController {
 
     //MARK: IBOutlets
@@ -22,6 +26,7 @@ class ViewController: UIViewController {
     var identifierView: String!
     var contact = Contact()
     var model: Contact!
+    weak var delegate: ViewControllerDelegate?
     
     //MARK: IBActions
     @IBAction func saveContact(_ sender: Any) {
@@ -41,6 +46,7 @@ class ViewController: UIViewController {
                     let alert = UIAlertController(title: "Contacto", message: "Su contacto ha sido guardado!!!", preferredStyle: .alert)
                     let oKAction = UIAlertAction(title: "OK", style: .default, handler: { (alert) in
                         _ = self.navigationController?.popViewController(animated: true)
+                        self.delegate?.updateContacts()
                     })
                     alert.addAction(oKAction)
                     self.present(alert, animated: true, completion: nil)

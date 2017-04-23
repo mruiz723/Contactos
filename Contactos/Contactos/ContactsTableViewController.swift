@@ -9,7 +9,7 @@
 import UIKit
 import SVProgressHUD
 
-class ContactsTableViewController: UITableViewController {
+class ContactsTableViewController: UITableViewController, ViewControllerDelegate {
     
     //MARK: - Properties
     var contact = Contact()
@@ -120,9 +120,15 @@ class ContactsTableViewController: UITableViewController {
             let detailVC = segue.destination as! ViewController
             detailVC.identifierView = segue.identifier
             detailVC.model = contact
+            detailVC.delegate = self
         }else {
             
         }
+    }
+    
+    // MARK: - ViewControllerDelegate
+    func updateContacts() {
+        self.tableView.reloadData()
     }
     
 

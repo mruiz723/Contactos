@@ -23,6 +23,8 @@ class ContactsTableViewController: UITableViewController, ViewControllerDelegate
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        tableView.tableFooterView = UIView()
+        
         SVProgressHUD.show()
         contact.contacts { (success, data) in
             

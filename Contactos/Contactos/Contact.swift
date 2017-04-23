@@ -8,10 +8,11 @@
 
 import Foundation
 
+
+
 class Contact {
-    
-    typealias CompletionHandler = (_ sucess:Bool, _ response:[Contact]) ->()
-    
+
+    typealias CompletionHandler = (_ sucess:Bool, _ response:[Contact]) -> ()
     
     //MARK: - Properties
     var id: String?
@@ -56,10 +57,7 @@ class Contact {
     
     func saveContact(_ contact: Contact, completion:@escaping CompletionHandler) {
         
-        let parameters : [String: AnyObject] = ["name": contact.name! as AnyObject, "last_name": contact.lastName! as AnyObject, "phone":contact.phone! as AnyObject, "email":contact.email! as AnyObject]
-        
-        
-        service.saveContact(parameters) { (success, data) in
+        service.saveContact(toDictionary(contact)) { (success, data) in
             if success {
                 self.contactsAgenda.append(contact)
                 
@@ -69,18 +67,33 @@ class Contact {
         
     }
     
-    func toDictionary() -> [String: AnyObject] {
+    func updateContact(_ contact: Contact, completion:@escaping CompletionHandlerUpdateDelete) {
+        let contactID = "/" + contact.id!
+        service.updateContact(contactID, parameters: toDictionary(contact)) { (success) in
+            completion(success)
+        }
+    }
+    
+    func deleteContact(_ index: Int, contactID: String, completion:@escaping CompletionHandlerUpdateDelete) {
+        let urlDelete = "/" + contactID
+        service.deleteContact(urlDelete) { (success) in
+            if success {
+                self.contactsAgenda.remove(at: index)
+            }
+            completion(success)
+        }
+    }
+    
+    func toDictionary(_ contact: Contact) -> [String: AnyObject] {
         
         let dict: [String: AnyObject] = [
-            "name": self.name! as AnyObject,
-            "last_name": self.lastName! as AnyObject,
-            "phone": self.phone! as AnyObject,
-            "email": self.email! as AnyObject
+            "name": contact.name! as AnyObject,
+            "last_name": contact.lastName! as AnyObject,
+            "phone": contact.phone! as AnyObject,
+            "email": contact.email! as AnyObject
         ]
         
         return dict
-        
-//        let parameters : [String: AnyObject] = ["name": contact.name! as AnyObject, "last_name": contact.lastName! as AnyObject, "phone":contact.phone! as AnyObject, "email":contact.email! as AnyObject]
     }
     
     

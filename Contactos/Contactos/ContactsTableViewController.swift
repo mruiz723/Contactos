@@ -23,6 +23,8 @@ class ContactsTableViewController: UITableViewController, ViewControllerDelegate
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        //Add footer of the table a view for showing separaton cell that are using.
         tableView.tableFooterView = UIView()
         
         SVProgressHUD.show()
@@ -73,43 +75,31 @@ class ContactsTableViewController: UITableViewController, ViewControllerDelegate
         
         return cell
     }
-
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    
+    // MARK: - UITableViewDelegate
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let contact = self.contact.contactsAgenda[indexPath.row]
+        performSegue(withIdentifier: "detail", sender: contact)
     }
-    */
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "Borrar") { (deleteAction, indexPath) in
+            SVProgressHUD.show()
+            let contactToDelete = self.contact.contactsAgenda[indexPath.row]
+            self.contact.deleteContact(indexPath.row, contactID: contactToDelete.id!, completion: { (success) in
+                SVProgressHUD.dismiss()
+                let okAction = UIAlertAction(title:"OK", style:.default, handler:nil)
+                if success {
+                    self.tableView.reloadData()
+                    self.makeAlert(title: "Contacto", message: "Su contacto ha sido eliminado satisfactoriamente", actions: [okAction])
+                }else {
+                        self.makeAlert(title: "Contacto", message: "Algo extraño ocurrio, por favor intente de nuevo.", actions: [okAction])
+                }
+            })
+        }
+        return [deleteAction]
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
     
     // MARK: - Navigation
 
@@ -118,13 +108,15 @@ class ContactsTableViewController: UITableViewController, ViewControllerDelegate
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
+        let detailVC = segue.destination as! ViewController
+        detailVC.delegate = self
         if segue.identifier == "add" {
-            let detailVC = segue.destination as! ViewController
             detailVC.identifierView = segue.identifier
             detailVC.model = contact
-            detailVC.delegate = self
         }else {
-            
+            detailVC.identifierView = "detail"
+            detailVC.model = contact
+            detailVC.contact = sender as! Contact
         }
     }
     

@@ -15,17 +15,18 @@ let headers = [
     "Content-Type": "application/x-www-form-urlencoded"
 ]
 
+typealias CompletionHandlerUpdateDelete = (_ sucess:Bool) ->()
+
 class Service: NSObject {
     
-    typealias CompletionHandler = (_ sucess:Bool, _ response:[[String: AnyObject]]) ->()
-    typealias CompletionHandlerPost = (_ success:Bool, _ response:[String: AnyObject] ) -> ()
+    typealias CompletionHandlerGET = (_ sucess:Bool, _ response:[[String: AnyObject]]) ->()
+    typealias CompletionHandler = (_ success:Bool, _ response:[String: AnyObject] ) -> ()
     
-    private let urlBase = "https://baas.kinvey.com"
-    private let contacts = "/appdata/kid_W1DbAwgKW-/Contacts"
     
-    func contacts(_ completion: @escaping CompletionHandler) {
-        let url = urlBase + contacts
-        Alamofire.request(url, headers: headers).responseJSON(){ response in
+    private let urlContacts = "https://baas.kinvey.com/appdata/kid_W1DbAwgKW-/Contacts"
+    
+    func contacts(_ completion: @escaping CompletionHandlerGET) {
+        Alamofire.request(urlContacts, headers: headers).responseJSON(){ response in
             
             switch response.result {
             case .success(let JSON):
@@ -40,10 +41,8 @@ class Service: NSObject {
     }
     
     
-    func saveContact(_ parameters:[String: AnyObject], completion:@escaping CompletionHandlerPost) {
-        let url = urlBase + contacts
-        
-        Alamofire.request(url, method:.post, parameters:parameters, headers:headers)
+    func saveContact(_ parameters:[String: AnyObject], completion:@escaping CompletionHandler) {
+        Alamofire.request(urlContacts, method:.post, parameters:parameters, headers:headers)
             .responseJSON(){response in
             
             switch response.result {
@@ -54,13 +53,36 @@ class Service: NSObject {
                 print(error)
                 completion(false, ["error" : error.localizedDescription as AnyObject])
             }
-            
         }
-        
-        
     }
     
+    func updateContact (_ contactID:String,  parameters: [String: AnyObject], completion: @escaping CompletionHandlerUpdateDelete) {
+        let url = urlContacts + contactID
+        Alamofire.request(url, method:.put, parameters: parameters, headers:headers).responseJSON() { response in
+            switch response.result {
+            case .success(let JSON):
+                print(JSON)
+                completion(true)
+            case .failure(let error):
+                print(error)
+                completion(false)
+            }
+        }
+    }
     
-    
+    func deleteContact (_ contactID:String, completion: @escaping CompletionHandlerUpdateDelete) {
+        let url = urlContacts + contactID
+        Alamofire.request(url, method:.delete, headers:headers).responseJSON() { response in
+            switch response.result {
+            case .success(let JSON):
+                print(JSON)
+                completion(true)
+            case .failure(let error):
+                print(error)
+                completion(false)
+            }
+        }
+    }
+
     
 }
